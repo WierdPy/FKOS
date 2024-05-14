@@ -51,11 +51,9 @@ $IPT -A FORWARD -i lan -o dmz -j lan_dmz
 $IPT -A FORWARD -i dmz -o lan -j lan_dmz
 
 $IPT -A lan_dmz -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+$IPT -A lan_dmz -p udp -m multiport --dports 123,2049,2050,88,749,53 -j ACCEPT  # NTP, NFS, Kerberos, DNS
+$IPT -A lan_dmz -p tcp -m multiport --dports 22,80,3000,9090,9100,88,749,2049,2050,53 -j ACCEPT  # SSH, HTTP, NFS, Kerberos, DNS
 $IPT -A lan_dmz -p icmp -j ACCEPT
-$IPT -A lan_dmz -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-$IPT -A lan_dmz -p icmp -j ACCEPT
-$IPT -A lan_dmz -p udp -m multiport --dports 53 -j ACCEPT  # DNS
-$IPT -A lan_dmz -p tcp -m multiport --dports 53 -j ACCEPT  # DNS
 $IPT -A lan_dmz -j REJECT
 
 
