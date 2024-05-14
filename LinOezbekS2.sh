@@ -52,20 +52,10 @@ $IPT -A FORWARD -i dmz -o lan -j lan_dmz
 
 $IPT -A lan_dmz -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 $IPT -A lan_dmz -p icmp -j ACCEPT
-$IPT -A lan_dmz -p udp --dport 53 -j ACCEPT   # DNS
-$IPT -A lan_dmz -p tcp --dport 53 -j ACCEPT   # DNS
-$IPT -A lan_dmz -p tcp --dport 80 -j ACCEPT   # HTTP
-$IPT -A lan_dmz -p tcp --dport 3000 -j ACCEPT # HTTP alternate port
-$IPT -A lan_dmz -p tcp --dport 9090 -j ACCEPT # HTTP alternate port
-$IPT -A lan_dmz -p tcp --dport 9100 -j ACCEPT # HTTP alternate port
-$IPT -A lan_dmz -p udp --dport 88 -j ACCEPT   # Kerberos
-$IPT -A lan_dmz -p tcp --dport 88 -j ACCEPT   # Kerberos
-$IPT -A lan_dmz -p udp --dport 749 -j ACCEPT  # Kerberos admin server
-$IPT -A lan_dmz -p tcp --dport 749 -j ACCEPT  # Kerberos admin server
-$IPT -A lan_dmz -p udp --dport 2049 -j ACCEPT # NFS
-$IPT -A lan_dmz -p tcp --dport 2049 -j ACCEPT # NFS
-$IPT -A lan_dmz -p udp --dport 2050 -j ACCEPT # NFS
-$IPT -A lan_dmz -p tcp --dport 2050 -j ACCEPT # NFS
+$IPT -A lan_dmz -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+$IPT -A lan_dmz -p icmp -j ACCEPT
+$IPT -A lan_dmz -p udp -m multiport --dports 53 -j ACCEPT  # DNS
+$IPT -A lan_dmz -p tcp -m multiport --dports 53 -j ACCEPT  # DNS
 $IPT -A lan_dmz -j REJECT
 
 
@@ -80,22 +70,8 @@ $IPT -A FORWARD -i dmz -o outside -j dmz_ext
 $IPT -A FORWARD -i outside -o dmz -j dmz_ext
 
 $IPT -A dmz_ext -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-$IPT -A dmz_ext -p udp --dport 123 -j ACCEPT  # NTP
-$IPT -A dmz_ext -p tcp --dport 22 -j ACCEPT   # SSH
-$IPT -A dmz_ext -p tcp --dport 80 -j ACCEPT   # HTTP
-$IPT -A dmz_ext -p tcp --dport 3000 -j ACCEPT # HTTP alternate port
-$IPT -A dmz_ext -p tcp --dport 9090 -j ACCEPT # HTTP alternate port
-$IPT -A dmz_ext -p tcp --dport 9100 -j ACCEPT # HTTP alternate port
-$IPT -A dmz_ext -p udp --dport 88 -j ACCEPT   # Kerberos
-$IPT -A dmz_ext -p tcp --dport 88 -j ACCEPT   # Kerberos
-$IPT -A dmz_ext -p udp --dport 749 -j ACCEPT  # Kerberos admin server
-$IPT -A dmz_ext -p tcp --dport 749 -j ACCEPT  # Kerberos admin server
-$IPT -A dmz_ext -p udp --dport 2049 -j ACCEPT # NFS
-$IPT -A dmz_ext -p tcp --dport 2049 -j ACCEPT # NFS
-$IPT -A dmz_ext -p udp --dport 2050 -j ACCEPT # NFS
-$IPT -A dmz_ext -p tcp --dport 2050 -j ACCEPT # NFS
-$IPT -A dmz_ext -p udp --dport 53 -j ACCEPT   # DNS
-$IPT -A dmz_ext -p tcp --dport 53 -j ACCEPT   # DNS
+$IPT -A dmz_ext -p udp -m multiport --dports 123,2049,2050,88,749,53 -j ACCEPT  # NTP, NFS, Kerberos, DNS
+$IPT -A dmz_ext -p tcp -m multiport --dports 22,80,3000,9090,9100,88,749,2049,2050,53 -j ACCEPT  # SSH, HTTP, NFS, Kerberos, DNS
 $IPT -A dmz_ext -p icmp -j ACCEPT
 $IPT -A dmz_ext -j REJECT
 
