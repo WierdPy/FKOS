@@ -35,8 +35,8 @@ $IPT -A lan_dmz -p tcp --dport http -j ACCEPT
 $IPT -A lan_dmz -p udp --dport http -j ACCEPT
 
 # NTP
-$IPT -A lan_dmz -p tcp --dport ntp -j ACCEPT
-$IPT -A lan_dmz -p udp --dport ntp -j ACCEPT
+$IPT -A lan_dmz -p tcp --dport 123 -j ACCEPT
+$IPT -A lan_dmz -p udp --dport 123 -j ACCEPT
 
 # SSH
 $IPT -A lan_dmz -p tcp --dport ssh -j ACCEPT
